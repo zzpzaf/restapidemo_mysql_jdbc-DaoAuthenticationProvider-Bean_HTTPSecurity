@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,11 +32,11 @@ public class CustomSecurityConfiguration extends WebSecurityConfigurerAdapter {
        // }
 
         @Bean
-        public JdbcDaoImpl userDetailsService(DataSource dataSource) {
+        public UserDetailsService usersDetailsService(DataSource dataSource) {
                 JdbcDaoImpl jdbcDaoImpl = new JdbcDaoImpl();
                 jdbcDaoImpl.setDataSource(dataSource);
                 return jdbcDaoImpl;
-        } 
+            } 
         
         @Bean
         public PasswordEncoder encoder() {
