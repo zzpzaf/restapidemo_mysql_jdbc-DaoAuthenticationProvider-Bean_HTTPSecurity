@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 
 
 
@@ -32,11 +33,10 @@ public class CustomSecurityConfiguration extends WebSecurityConfigurerAdapter {
        // }
 
         @Bean
-        public UserDetailsService usersDetailsService(DataSource dataSource) {
-                JdbcDaoImpl jdbcDaoImpl = new JdbcDaoImpl();
-                jdbcDaoImpl.setDataSource(dataSource);
+        public UserDetailsService userDetailsService(DataSource dataSource) {
+                JdbcDaoImpl jdbcDaoImpl = new JdbcUserDetailsManager(dataSource);
                 return jdbcDaoImpl;
-            } 
+            }
         
         @Bean
         public PasswordEncoder encoder() {
