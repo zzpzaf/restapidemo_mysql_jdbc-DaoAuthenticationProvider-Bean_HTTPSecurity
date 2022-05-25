@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -26,17 +25,10 @@ public class CustomSecurityConfiguration extends WebSecurityConfigurerAdapter {
                .and().httpBasic();
        }
 
-       // @Override
-       // protected void configure(AuthenticationManagerBuilder auth) throws Exception {                
-       //         auth.inMemoryAuthentication()
-       //         .withUser("user").password("{noop}mypassword").roles("USER");
-       // }
-
         @Bean
         public UserDetailsService userDetailsService(DataSource dataSource) {
-                JdbcDaoImpl jdbcDaoImpl = new JdbcUserDetailsManager(dataSource);
-                return jdbcDaoImpl;
-            }
+            return new JdbcUserDetailsManager(dataSource);
+        }
         
         @Bean
         public PasswordEncoder encoder() {
