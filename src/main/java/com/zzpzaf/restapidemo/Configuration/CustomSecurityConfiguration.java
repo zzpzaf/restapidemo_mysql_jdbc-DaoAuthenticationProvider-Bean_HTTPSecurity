@@ -1,10 +1,13 @@
 package com.zzpzaf.restapidemo.Configuration;
 
+import com.zzpzaf.restapidemo.Services.CustomUserDetailsService;
+
+// import org.apache.commons.logging.Log;
+// import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -17,27 +20,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class CustomSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    //private final Log logger = LogFactory.getLog(getClass());
+    
     @Autowired
-    private JdbcTemplate jdbcTemplate;    
-
-    //Authentication and Authorization SQL Strings
-    private final String authenticateSQL = "SELECT USERNAME as user_name, PASSWORD as user_pwd, ACCOUNT_ENABLED as user_enabled FROM USERS WHERE USERNAME = ?";
-    private final String authorizeSQL = "SELECT USERNAME as user_name, ROLE as user_role FROM USERSROLES WHERE USERNAME = ?";
+    private CustomUserDetailsService userDetailsService;
  
        @Override
        protected void configure(HttpSecurity http) throws Exception {
-            http.authorizeRequests().antMatchers("/api/items").hasRole("ADMIN")
+            http.authorizeRequests().antMatchers("/api/items").hasAnyAuthority("ADMIN", "USER")
             .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and().httpBasic();
        }
 
-       @Override
-       public void configure(AuthenticationManagerBuilder auth) throws Exception {
-           auth.jdbcAuthentication()
-           .dataSource(jdbcTemplate.getDataSource())     //database connection
-           .usersByUsernameQuery(authenticateSQL)
-           .authoritiesByUsernameQuery(authorizeSQL)
-           .passwordEncoder(encoder());
+       @Bean
+       public DaoAuthenticationProvider authenticationProvider(){
+           DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+           provider.setPasswordEncoder(encoder());
+           provider.setUserDetailsService(userDetailsService);
+           //logger.info("+++++++++++++++++++++++++++++");
+           return provider;
+           
        }
 
         
