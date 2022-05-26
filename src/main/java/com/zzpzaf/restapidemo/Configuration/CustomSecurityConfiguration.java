@@ -2,8 +2,6 @@ package com.zzpzaf.restapidemo.Configuration;
 
 import com.zzpzaf.restapidemo.Services.CustomUserDetailsService;
 
-// import org.apache.commons.logging.Log;
-// import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,8 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class CustomSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    //private final Log logger = LogFactory.getLog(getClass());
-    
     @Autowired
     private CustomUserDetailsService userDetailsService;
  
@@ -37,7 +33,6 @@ public class CustomSecurityConfiguration extends WebSecurityConfigurerAdapter {
            DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
            provider.setPasswordEncoder(encoder());
            provider.setUserDetailsService(userDetailsService);
-           //logger.info("+++++++++++++++++++++++++++++");
            return provider;
            
        }
